@@ -217,15 +217,19 @@ ${result.recommended_actions?.map((x, i) => `${i + 1}. ${x}`).join("\n") || "Non
             </div>
           </div>
 
-          <div className="hero-diagram" aria-hidden="true">
+          <div className="hero-diagram" role="list" aria-label="How Bridge AI processes a report">
             {pipeline.map((step, i) => (
-              <div className="pipe-step" key={step.key} style={{ "--d": `${i * 0.12}s` }}>
-                <div className={`pipe-node pipe-node--${step.key}`}>{i + 1}</div>
+              <div className="pipe-step" role="listitem" key={step.key} style={{ "--d": `${i * 0.12}s` }}>
+                <div className={`pipe-node pipe-node--${step.key}`} aria-hidden="true">
+                  {i + 1}
+                </div>
                 <div className="pipe-text">
                   <strong>{step.label}</strong>
                   <span>{step.note}</span>
                 </div>
-                {i < pipeline.length - 1 && <div className="pipe-line" style={{ "--d": `${i * 0.12 + 0.06}s` }} />}
+                {i < pipeline.length - 1 && (
+                  <div className="pipe-line" aria-hidden="true" style={{ "--d": `${i * 0.12 + 0.06}s` }} />
+                )}
               </div>
             ))}
           </div>
@@ -260,7 +264,7 @@ ${result.recommended_actions?.map((x, i) => `${i + 1}. ${x}`).join("\n") || "Non
             <div>
               <div className="step-label">01 — Real-world input</div>
               <h2>Tell us what happened</h2>
-              <p>Describe the situation in your own words. Add a photo if you have one.</p>
+              <p id="input-hint">Describe the situation in your own words. Add a photo if you have one.</p>
             </div>
             <button className="ghost-button" onClick={clearInput}>
               Clear
@@ -268,13 +272,20 @@ ${result.recommended_actions?.map((x, i) => `${i + 1}. ${x}`).join("\n") || "Non
           </div>
 
           <div className="input-wrapper">
+            <label className="sr-only" htmlFor="incident-text">
+              Describe the situation
+            </label>
             <textarea
+              id="incident-text"
               placeholder="Describe the situation in your own words…"
               rows="6"
+              aria-describedby="input-hint character-count"
               value={text}
               onChange={(e) => setText(e.target.value)}
             />
-            <div className="character-count">{text.length} characters</div>
+            <div className="character-count" id="character-count">
+              {text.length} characters
+            </div>
           </div>
 
           <div className="upload-box">
@@ -327,8 +338,8 @@ ${result.recommended_actions?.map((x, i) => `${i + 1}. ${x}`).join("\n") || "Non
 
         {/* LOADING */}
         {loading && (
-          <div className="panel loading-card">
-            <div className="loading-animation">
+          <div className="panel loading-card" role="status" aria-live="polite">
+            <div className="loading-animation" aria-hidden="true">
               <span />
               <span />
               <span />
@@ -340,7 +351,7 @@ ${result.recommended_actions?.map((x, i) => `${i + 1}. ${x}`).join("\n") || "Non
 
         {/* RESULT */}
         {result && !result.error && (
-          <section className="panel result-panel">
+          <section className="panel result-panel" role="region" aria-label="Bridge AI analysis result">
             <div className="section-heading">
               <div>
                 <div className="step-label">02 — Bridge AI output</div>
@@ -469,8 +480,10 @@ ${result.recommended_actions?.map((x, i) => `${i + 1}. ${x}`).join("\n") || "Non
 
         {/* ERROR */}
         {result?.error && (
-          <div className="panel error-box">
-            <div className="error-icon">!</div>
+          <div className="panel error-box" role="alert">
+            <div className="error-icon" aria-hidden="true">
+              !
+            </div>
             <div>
               <h3>Analysis error</h3>
               <p>{result.error}</p>
